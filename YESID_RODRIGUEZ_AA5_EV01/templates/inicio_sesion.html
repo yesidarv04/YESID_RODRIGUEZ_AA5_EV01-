@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2 class="form-title">Inicio de Sesión</h2>
+        <form id="login-form" method="POST" action="#">
+            <input type="text" id="usuario" placeholder="Usuario">
+            <input type="password" id="contraseña" placeholder="Contraseña">
+            <button type="button" id="login-button">Iniciar Sesión</button>
+        </form>
+        <div class="mensaje" id="inicio-mensaje"></div> <!-- Div para mostrar los mensajes -->
+        <div class="link">
+            <a href="{{ url_for('auth.registro_page') }}">Ir a la página de Registro</a>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Captura el clic en el botón "Iniciar Sesión"
+            $("#login-button").click(function() {
+                // Obtiene los valores de los campos de usuario y contraseña
+                var usuario = $("#usuario").val();
+                var contraseña = $("#contraseña").val();
+
+                // Crea un objeto con los datos del formulario
+                var data = {
+                    usuario: usuario,
+                    contraseña: contraseña
+                };
+
+                // Realiza una solicitud AJAX al servidor
+                $.ajax({
+                    type: "POST", // Método de la solicitud
+                    url: "{{ url_for('auth.inicio_sesion') }}", // Ruta de la API
+                    contentType: "application/json", // Tipo de contenido JSON
+                    data: JSON.stringify(data), // Datos a enviar (convertidos a JSON)
+                    success: function(response) {
+                        // Mostrar mensaje exitoso en el elemento creado
+                        $("#inicio-mensaje").text(response.mensaje).addClass("mensaje-exitoso").removeClass("mensaje-error");
+                    },
+                    error: function(error) {
+                        // Mostrar mensaje de error en el elemento creado
+                        $("#inicio-mensaje").text("Error en la autenticación").addClass("mensaje-error").removeClass("mensaje-exitoso");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
